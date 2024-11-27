@@ -2,6 +2,6 @@ FROM busybox
 
 
 COPY bin/grestserver /home/
-
+ENTRYPOINT  ["/home/grestserver"]
 
 

@@ -57,20 +57,6 @@ func (w *wrapStruct) PostUpload(ctx echo.Context) error {
 
 }
 
-type yType struct {
-	Name    string
-	Version string
-	Chart   string
-}
-
-/*
-   fmt.Println("Start to make yaml")
-   yf, err := ioutil.ReadFile("cool.ext")
-   if err != nil {
-           log.Fatal(err)
-   }
-*/
-
 func main() {
 	e := echo.New()
 	wi := new(wrapStruct)

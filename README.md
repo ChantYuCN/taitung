@@ -12,7 +12,7 @@ kubectl expose po gserver --port 50029 --target-port 50029
 # Test
 
 ```
-export HLWORKSPACE=/home/labuser/habanashared/
+export HLWORKSPACE=/mnt/
 ./bin/grestserver
 
 curl -X POST  127.0.0.1:9911/upload --form file='@filelocation'

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hl-artifact-svc
+  namespace: hl
+  labels:
+    app: hl-artifact-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hl-artifact-svc
+  template:
+    metadata:
+      labels:
+        app: hl-artifact-svc
+    spec:
+      containers:
+      - name: hl-artifact-svc
+        image: chant/habana.ai/hl-artifact-svc:0.1
+        ports:
+        - containerPort: 9911
+        volumeMounts:
+        - name: hl-artifact-svc-hostpath-storage
+          mountPath: /mnt
+      volumes:
+        - name: hl-artifact-svc-hostpath-storage
+          hostPath:
+            path: /home/labuser/habanashared
+            type: Directory

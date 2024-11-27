@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hl-artifact-svc
+  namespace: hl
+spec:
+  ports:
+  - name: hl-artifact-svc-web
+    nodePort: 31911
+    port: 9911
+    protocol: TCP
+    targetPort: 9911
+  selector:
+    app: hl-artifact-svc
+  sessionAffinity: None
+  type: NodePort

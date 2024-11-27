@@ -7,11 +7,11 @@ PROTOFILE      = "proto/testgrpcsvc.proto"
 HOME           ?= ${HOME}
 PWD            = $(shell pwd)
 
-IMG_VERSION ?= test-0.1
-IMG_NAME                ?= coolguy
+IMG_VERSION ?= 0.1
+IMG_NAME                ?= hl-artifact-svc
 DOCKER_ENV              := DOCKER_BUILDKIT=1
 DOCKER_REGISTRY         ?= chant
-DOCKER_REPOSITORY       ?= rest
+DOCKER_REPOSITORY       ?= habana.ai
 DOCKER_TAG              := ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${IMG_NAME}
 DOCKER_LABEL_VERSION    ?= ${IMG_VERSION}
 
@@ -34,8 +34,8 @@ swag-spec:
 go-build:
 	$(GO_BUILD_CMD) build -o bin/grestserver cmd/main.go
 
+# rootlesskit buildkitd
 
-docker-build:
-	docker build . -f Dockerfile.golang \
+nerdctl-build:
+	${DOCKER_ENV} nerdctl build . -f Dockerfile.golang \
 	  -t ${DOCKER_TAG}:${IMG_VERSION}
-	
