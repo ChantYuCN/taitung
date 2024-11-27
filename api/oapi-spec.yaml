@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  description: Artifact Service API
+  title: Test Chant API - OpenAPI 3.0
+  version: 0.1.0
+
+paths:
+  /hello:
+    get:
+      description: chant debug
+      responses:
+        "200":
+          description: Successfully Say Hello
+  /upload:
+    post:
+      description: cool
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_file'
+        required: true
+      responses:
+        "200":
+          description: Successfully Upload file
+        "501":
+          description: failed Upload file
+components:
+  schemas:
+    _file:
+      type: file
+      # properties:
+      #   fileName:
+      #     type: string
+      #     format: binary
+
+
+
