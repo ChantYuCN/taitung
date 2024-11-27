@@ -16,10 +16,6 @@ import (
 	//      "log"
 )
 
-type fr struct {
-	lx map[string]interface{}
-}
-
 type wrapStruct struct{}
 
 func (w *wrapStruct) GetHello(ctx echo.Context) error {
@@ -44,8 +40,9 @@ func (w *wrapStruct) PostUpload(ctx echo.Context) error {
 	}
 	defer src.Close()
 
+	x := os.Getenv("HLWORKSPACE")
 	//strPwd, _ := os.Getwd()
-	dst, err := os.Create(file.Filename + "_done")
+	dst, err := os.Create(x + file.Filename)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "failed Upload file")
 	}
@@ -54,59 +51,7 @@ func (w *wrapStruct) PostUpload(ctx echo.Context) error {
 	if _, err = io.Copy(dst, src); err != nil {
 		return ctx.String(http.StatusBadRequest, "failed Upload file")
 	}
-	// //oa := new(svc.Oneuy)
 
-	// //if err := ctx.Bind(oa); err != nil {
-	// //	return ctx.JSON(http.StatusBadRequest, err.Error())
-	// //}
-	// //fmt.Println(oa.TemplateFiles)
-	// file, err := ctx.FormFile("data")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return err
-	// }
-	// /*
-	// 		bytebuf := bytes.NewBuffer(nil)
-	// 		if _, err := io.Copy(bytebuf, file); err != nil {
-	// 	                fmt.Println(err)
-	// 	                return err
-	// 		}
-	// */
-	// fmt.Println(0)
-	// src, err := file.Open()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return err
-	// }
-	// defer src.Close()
-
-	// //data := wrapStruct
-	// /*
-	// 	buf := make([]byte, 100)
-	// 	n, err := src.Read(buf)
-	// 	fmt.Println(n, err, buf[:n])
-	// */
-	// fmt.Println(1)
-	// bodyresp, err := ioutil.ReadAll(src)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return err
-
-	// }
-	// var fi fr
-	// fmt.Println(2)
-	// err = yaml.Unmarshal(bodyresp, &fi.lx)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return err
-	// }
-	// fmt.Println(fi.lx)
-
-	// lp := new(interface{})
-	// if err := ctx.Bind(lp); err != nil {
-	// 	return err
-	// }
-	// fmt.Println(lp)
 	log.Print("Post Upload -- stop")
 	return ctx.String(http.StatusOK, "Successfully Upload file")
 
