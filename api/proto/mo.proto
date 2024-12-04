@@ -1,0 +1,16 @@
+syntax = "proto3";
+package mod_proto;
+
+option go_package = ".;taitung_mod";
+
+service LoadFileModuleInterface  {
+  rpc StoreLogAbsPath(FilePathBufRequest) returns (FilePathBufResponse) {}
+}
+
+message FilePathBufRequest {
+  string uuid  = 1;
+}
+
+message FilePathBufResponse {
+  string filepath  = 1;
+}

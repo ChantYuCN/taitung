@@ -1,9 +1,0 @@
----
-release: 23.11
-installer:
-  provision:
-  - name: Provisioning Installer
-    version: 1.0.8
-  rchestrator:
-  - name: Edge Native orchestrator
-    version: 1.0.0-rc9
