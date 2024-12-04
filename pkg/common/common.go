@@ -1,7 +1,8 @@
 package common
 
 var (
-	LOGFOLDER = "/home/labuser/habanashared/Habana-Content-Management-Service/"
+	//LOGFOLDER = "/home/labuser/habanashared/Habana-Content-Management-Service/"
+	LOGFOLDER = "/mnt/Habana-Content-Management-Service/"
 )
 
 const (
