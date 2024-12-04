@@ -4,7 +4,9 @@
 package client
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -14,10 +16,24 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Abspath defines model for _abspath.
+type Abspath struct {
+	Abspaths *string `json:"abspaths"`
+}
+
 // File defines model for _file.
 type File struct {
 	FileName *openapi_types.File `json:"fileName,omitempty"`
 }
+
+// Oam defines model for _oam.
+type Oam struct {
+	Build *string `json:"build"`
+	Sn    *string `json:"sn"`
+}
+
+// GetFilepathJSONRequestBody defines body for GetFilepath for application/json ContentType.
+type GetFilepathJSONRequestBody = Oam
 
 // PostUploadMultipartRequestBody defines body for PostUpload for multipart/form-data ContentType.
 type PostUploadMultipartRequestBody = File
@@ -95,11 +111,40 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
+	// GetFilepathWithBody request with any body
+	GetFilepathWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GetFilepath(ctx context.Context, body GetFilepathJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetHello request
 	GetHello(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PostUploadWithBody request with any body
 	PostUploadWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+}
+
+func (c *Client) GetFilepathWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetFilepathRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetFilepath(ctx context.Context, body GetFilepathJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetFilepathRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
 }
 
 func (c *Client) GetHello(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -124,6 +169,46 @@ func (c *Client) PostUploadWithBody(ctx context.Context, contentType string, bod
 		return nil, err
 	}
 	return c.Client.Do(req)
+}
+
+// NewGetFilepathRequest calls the generic GetFilepath builder with application/json body
+func NewGetFilepathRequest(server string, body GetFilepathJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGetFilepathRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewGetFilepathRequestWithBody generates requests for GetFilepath with any type of body
+func NewGetFilepathRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/filepath")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
 }
 
 // NewGetHelloRequest generates requests for GetHello
@@ -225,11 +310,38 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
+	// GetFilepathWithBodyWithResponse request with any body
+	GetFilepathWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetFilepathResponse, error)
+
+	GetFilepathWithResponse(ctx context.Context, body GetFilepathJSONRequestBody, reqEditors ...RequestEditorFn) (*GetFilepathResponse, error)
+
 	// GetHelloWithResponse request
 	GetHelloWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHelloResponse, error)
 
 	// PostUploadWithBodyWithResponse request with any body
 	PostUploadWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostUploadResponse, error)
+}
+
+type GetFilepathResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Abspath
+}
+
+// Status returns HTTPResponse.Status
+func (r GetFilepathResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetFilepathResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
 }
 
 type GetHelloResponse struct {
@@ -274,6 +386,23 @@ func (r PostUploadResponse) StatusCode() int {
 	return 0
 }
 
+// GetFilepathWithBodyWithResponse request with arbitrary body returning *GetFilepathResponse
+func (c *ClientWithResponses) GetFilepathWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetFilepathResponse, error) {
+	rsp, err := c.GetFilepathWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetFilepathResponse(rsp)
+}
+
+func (c *ClientWithResponses) GetFilepathWithResponse(ctx context.Context, body GetFilepathJSONRequestBody, reqEditors ...RequestEditorFn) (*GetFilepathResponse, error) {
+	rsp, err := c.GetFilepath(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetFilepathResponse(rsp)
+}
+
 // GetHelloWithResponse request returning *GetHelloResponse
 func (c *ClientWithResponses) GetHelloWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHelloResponse, error) {
 	rsp, err := c.GetHello(ctx, reqEditors...)
@@ -290,6 +419,32 @@ func (c *ClientWithResponses) PostUploadWithBodyWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParsePostUploadResponse(rsp)
+}
+
+// ParseGetFilepathResponse parses an HTTP response from a GetFilepathWithResponse call
+func ParseGetFilepathResponse(rsp *http.Response) (*GetFilepathResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetFilepathResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Abspath
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
 }
 
 // ParseGetHelloResponse parses an HTTP response from a GetHelloWithResponse call

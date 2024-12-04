@@ -17,16 +17,33 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Abspath defines model for _abspath.
+type Abspath struct {
+	Abspaths *string `json:"abspaths"`
+}
+
 // File defines model for _file.
 type File struct {
 	FileName *openapi_types.File `json:"fileName,omitempty"`
 }
+
+// Oam defines model for _oam.
+type Oam struct {
+	Build *string `json:"build"`
+	Sn    *string `json:"sn"`
+}
+
+// GetFilepathJSONRequestBody defines body for GetFilepath for application/json ContentType.
+type GetFilepathJSONRequestBody = Oam
 
 // PostUploadMultipartRequestBody defines body for PostUpload for multipart/form-data ContentType.
 type PostUploadMultipartRequestBody = File
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+
+	// (GET /filepath)
+	GetFilepath(ctx echo.Context) error
 
 	// (GET /hello)
 	GetHello(ctx echo.Context) error
@@ -38,6 +55,15 @@ type ServerInterface interface {
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// GetFilepath converts echo context to params.
+func (w *ServerInterfaceWrapper) GetFilepath(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetFilepath(ctx)
+	return err
 }
 
 // GetHello converts echo context to params.
@@ -86,6 +112,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
+	router.GET(baseURL+"/filepath", wrapper.GetFilepath)
 	router.GET(baseURL+"/hello", wrapper.GetHello)
 	router.POST(baseURL+"/upload", wrapper.PostUpload)
 
@@ -94,13 +121,15 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/5RSwW7bMAz9FYHb0bGdBbvolu2w5bIFSHsuFImOVciiKtEBjMD/XkguGhTupT4Rj3qP",
-	"j3y+gaYhkEfPCeQNku5xUKV86qzDXIRIASNbLHBG/6mhdDqKg2KQcLZexQkq4CkgSEgcrb/APL8jdH5G",
-	"zTBnyPqOMt1g0tEGtuRBwj6y7ZRmccJ4tRrF/njIipazDXjAxOJ3rzznhtiI/wF9rnZ1CxVcMaZFp623",
-	"dQtzBRTQq2BBwq5uy6OguC9LND06VzxckNdWdBlj8DxeoOhElTsHAxL+IP8t5AoipkA+LXf50bZrodOo",
-	"NabUjc5N4qQmsVDncoZmDI6UKSem9JkNIreaf6TEjwsxO3gZMfEvMlOma/KMvigNo2MbVOQmh7QxitU9",
-	"31x9j9iBhG/N/Qdo3tJvluiLyTzBRjQgOY44f3npxapYBCv42W7XhE5Zh+bj0/K9BgAA///2oMlzngIA",
-	"AA==",
+	"H4sIAAAAAAAC/6xTwW7bMAz9FYHbMY3dFbv41g3Y1stWoOu5oGU6ViGLqkgXCIr8+yA5adA5K9ZhOhEi",
+	"+fj4SD6B5TFyoKACzROIHWjEYt5hKxF1yHZMHCmpo+LZO4odJu+x9QSNpolWoNtI0IBocmEDu93zD7f3",
+	"ZBV2K7jrXY7/HTX/fsexeHpOIyo00LqAaQtL3IzDOC5h2sn57i+YrUDCPzWQv1zoOSd3JDa5qI4DNHCZ",
+	"1PVo1dxQenSWzOX1VabuNMPDTxI1nwcMmh3mzPyIFLJ1sa5hBY+UZMap1+frOjPkSAGjgwYu1nUJeta9",
+	"ynIdxrMhXbIRwmQHowMZxtHkeIOhMz2pHYxTMdiKKRClUsKceNVBA19JvxzgV5DoYSLRT9xtcxXLQSmU",
+	"ghijd7bkVffC4bhB2XqfqIcG3lXHFav2+1WV2e2KlokkcpB5eh/q+v/VOCxwKfNSnJvJWhLpJ++3ZkNa",
+	"ZCoSzQrP1KqBvOc/KmzLLDtqp80pCb+V5NMNvsLmBrdmTt2TmKJnLCsdWU7QmP0ze2Ujmhg3tGB0zaK3",
+	"M9RrMx0nry5i0iof4VmHim+QvJz2fqwPk0vUzXe1e7MMt8eu8il8rM+XCT06T93L0PJ+BQAA//9gE1fI",
+	"1wQAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

@@ -8,7 +8,7 @@ PROTOFILE      = "proto/mo.proto"
 HOME           ?= ${HOME}
 PWD            = $(shell pwd)
 
-IMG_VERSION ?= 0.1
+IMG_VERSION ?= 0.2
 IMG_NAME                ?= hl-artifact-svc
 DOCKER_ENV              := DOCKER_BUILDKIT=1
 DOCKER_REGISTRY         ?= chant

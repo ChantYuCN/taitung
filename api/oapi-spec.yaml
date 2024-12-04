@@ -13,7 +13,7 @@ paths:
           description: Successfully Say Hello
   /upload:
     post:
-      description: cool
+      description: upload file to stroage
       requestBody:
         content:
           multipart/form-data:
@@ -25,14 +25,44 @@ paths:
           description: Successfully Upload file
         "501":
           description: failed Upload file
+  /filepath:
+    get:
+      description: search the oam file and fetch its abs path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/_oam'
+      responses:
+        "200":
+          description: Successfully get the file paths
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_abspath'
 components:
   schemas:
     _file:
-      type: file
-      # properties:
-      #   fileName:
-      #     type: string
-      #     format: binary
-
-
+      # type: file
+      properties:
+        fileName:
+          type: string
+          format: binary
+    _oam:
+      type: object
+      properties:
+        sn:
+          type: string
+          # prevent from invalid memory address or nil pointer dereference
+          # create  fields without pointers
+          nullable: true
+        build:
+          type: string
+          nullable: true
+    _abspath:
+      type: object
+      properties:
+        abspaths:
+          type: string
+          nullable: true
 

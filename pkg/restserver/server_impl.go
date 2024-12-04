@@ -3,6 +3,8 @@ package restserver
 import (
 	"context"
 	"log"
+	common "taitung/pkg/common"
+	tcnt "taitung/pkg/content"
 	svc "taitung/pkg/server"
 	"time"
 
@@ -11,7 +13,13 @@ import (
 	"os"
 
 	"github.com/labstack/echo/v4"
+	"github.com/naughtygopher/errors"
 )
+
+// var (
+// 	//LOGFOLDER = "/mnt/Habana-Content-Management-Service/"
+// 	LOGFOLDER = "/home/labuser/habanashared/Habana-Content-Management-Service/"
+// )
 
 // future work
 
@@ -51,9 +59,45 @@ func (r *Server) Stop() {
 
 type wrapStruct struct{}
 
+func (w *wrapStruct) GetFilepath(ctx echo.Context) error {
+	log.Print("Get Filepath -- Start")
+	jsonReq := new(svc.Oam)
+	if err := ctx.Bind(jsonReq); err != nil {
+		status, msg, _ := errors.HTTPStatusCodeMessage(err)
+		log.Print(" status: %v, msg: %v", status, msg)
+		return ctx.JSON(status, msg)
+	}
+
+	// if condition to prevent nil pointer
+	// log.Print(*jsonReq.Sn)
+	// log.Print(*jsonReq.Build)
+
+	snFolderPath := tcnt.SearchTheFile(*jsonReq.Sn, common.LOGFOLDER)
+	if snFolderPath == "" {
+		var resStr = "Folder Not Found: " + *jsonReq.Sn
+		jsonRes := svc.Abspath{Abspaths: &resStr}
+		return ctx.JSON(503, jsonRes)
+	}
+	if cicduuid := os.Getenv(common.HLCICDUUID); cicduuid != "" {
+		log.Print("Put into stack")
+		common.HashMap[cicduuid] = snFolderPath
+	}
+
+	jsonRes := svc.Abspath{Abspaths: &snFolderPath}
+
+	// store into persistent stack
+	// get value from jenkins enviroment
+	// unique_Id = UUID.randomUUID().toString()
+
+	log.Print("Get Filepath -- Stop")
+	return ctx.JSON(200, jsonRes)
+
+}
+
 func (w *wrapStruct) GetHello(ctx echo.Context) error {
 	log.Print("Get Hello -- Start")
 	log.Print("Chant say hello")
+	log.Print(common.HashMap["ASDF"])
 	log.Print("Get Hello -- Stop")
 	return ctx.String(http.StatusOK, "Chant say hello\n")
 }

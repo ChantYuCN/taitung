@@ -17,4 +17,6 @@ export HLWORKSPACE=/mnt/
 
 curl -X POST  127.0.0.1:9911/upload --form file='@filelocation'
 
+
+curl -X GET 127.0.0.1:9911/filepath  -H "Content-Type: application/json" -d '{"sn":"AO45001234"}'
 ```

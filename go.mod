@@ -7,6 +7,7 @@ toolchain go1.22.9
 require (
 	github.com/getkin/kin-openapi v0.128.0
 	github.com/labstack/echo/v4 v4.12.0
+	github.com/naughtygopher/errors v1.0.0
 	github.com/oapi-codegen/runtime v1.1.1
 	google.golang.org/grpc v1.68.0
 	google.golang.org/protobuf v1.34.2
