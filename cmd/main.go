@@ -8,10 +8,9 @@ import (
 	"os"
 	"sync"
 
-	svc "taitung/pkg/server"
-
 	pb "taitung/api/proto"
 	grpcs "taitung/pkg/grpcserver"
+	serverimpl "taitung/pkg/restserver"
 
 	"os/signal"
 	"syscall"
@@ -19,10 +18,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	//	"io"
-	//	"bytes"
-	// "io/ioutil"
-	//      "log"
 )
 
 func handleSignal(wg *sync.WaitGroup) {
@@ -82,14 +77,13 @@ func (w *wrapStruct) PostUpload(ctx echo.Context) error {
 
 func main() {
 	log.Print("Start -- rest api server, port 9911")
-	e := echo.New()
-	wi := new(wrapStruct)
-	svc.RegisterHandlers(e, wi)
-	go func(e *echo.Echo) {
-		if err := e.Start("0.0.0.0:9911"); err != nil {
-			log.Fatal("Failed to start echo-struct rest api ")
-		}
-	}(e)
+	// e := echo.New()
+	// wi := new(wrapStruct)
+	// svc.RegisterHandlers(e, wi)
+	restSvc, _ := serverimpl.NewRestServer()
+	go func(restSvc *serverimpl.Server) {
+		restSvc.Start()
+	}(restSvc)
 	log.Print("Stop -- rest api server")
 
 	log.Print("Start -- grpc server, port 9912")
