@@ -3,10 +3,11 @@ package restserver
 import (
 	"context"
 	"log"
-	common "taitung/pkg/common"
-	tcnt "taitung/pkg/content"
-	svc "taitung/pkg/server"
 	"time"
+
+	common "github.com/ChantYuCN/taitung/pkg/common"
+	tcnt "github.com/ChantYuCN/taitung/pkg/content"
+	svc "github.com/ChantYuCN/taitung/pkg/server"
 
 	"io"
 	"net/http"

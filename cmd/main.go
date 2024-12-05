@@ -8,9 +8,9 @@ import (
 	"os"
 	"sync"
 
-	pb "taitung/api/proto"
-	grpcs "taitung/pkg/grpcserver"
-	serverimpl "taitung/pkg/restserver"
+	pb "github.com/ChantYuCN/taitung/api/proto"
+	grpcs "github.com/ChantYuCN/taitung/pkg/grpcserver"
+	serverimpl "github.com/ChantYuCN/taitung/pkg/restserver"
 
 	"os/signal"
 	"syscall"

@@ -4,8 +4,9 @@ import (
 	"context"
 	"log"
 	"os"
-	pb "taitung/api/proto"
-	common "taitung/pkg/common"
+
+	pb "github.com/ChantYuCN/taitung/api/proto"
+	common "github.com/ChantYuCN/taitung/pkg/common"
 
 	"google.golang.org/grpc"
 )
