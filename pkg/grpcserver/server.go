@@ -3,8 +3,9 @@ package grpcserver
 import (
 	"context"
 	"log"
-	pb "taitung/api/proto"
-	common "taitung/pkg/common"
+
+	pb "github.com/ChantYuCN/taitung/api/proto"
+	common "github.com/ChantYuCN/taitung/pkg/common"
 	// "taitung/cmd/common"
 	// "taitung/handler"
 	//"google.golang.org/grpc/metadata"
