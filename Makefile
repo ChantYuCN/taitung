@@ -60,7 +60,7 @@ swag-spec:
 	
 go-build:
 	$(GO_BUILD_CMD) build -o ${BINDIR}/grestserver cmd/main.go
-	$(GO_BUILD_CMD) build -o ${BINDIR}/scaling-infra-cli-k8s client/grpcclient.go
+	$(GO_BUILD_CMD) build -o ${BINDIR}/grpcclient client/grpcclient.go
 
 # rootlesskit buildkitd
 
