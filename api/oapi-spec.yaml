@@ -59,6 +59,9 @@ components:
         build:
           type: string
           nullable: true
+        uuid:
+          type: string
+          nullable: true         
     _abspath:
       type: object
       properties:

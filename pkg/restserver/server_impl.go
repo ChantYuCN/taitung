@@ -78,9 +78,10 @@ func (w *wrapStruct) GetFilepath(ctx echo.Context) error {
 		jsonRes := svc.Abspath{Abspaths: &resStr}
 		return ctx.JSON(503, jsonRes)
 	}
-	if cicduuid := os.Getenv(common.HLCICDUUID); cicduuid != "" {
+	//if cicduuid := os.Getenv(common.HLCICDUUID); cicduuid != "" {
+	if *jsonReq.Uuid != "" {
 		log.Print("Put into stack")
-		common.HashMap[cicduuid] = snFolderPath
+		common.HashMap[*jsonReq.Uuid] = snFolderPath
 	}
 
 	jsonRes := svc.Abspath{Abspaths: &snFolderPath}

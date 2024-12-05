@@ -30,6 +30,7 @@ type File struct {
 type Oam struct {
 	Build *string `json:"build"`
 	Sn    *string `json:"sn"`
+	Uuid  *string `json:"uuid"`
 }
 
 // GetFilepathJSONRequestBody defines body for GetFilepath for application/json ContentType.

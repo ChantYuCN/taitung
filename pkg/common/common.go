@@ -6,6 +6,7 @@ var (
 )
 
 const (
+	// reserve for cicd env para
 	HLCICDUUID = "HL_CICD_UUID"
 )
 

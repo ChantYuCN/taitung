@@ -31,6 +31,7 @@ type File struct {
 type Oam struct {
 	Build *string `json:"build"`
 	Sn    *string `json:"sn"`
+	Uuid  *string `json:"uuid"`
 }
 
 // GetFilepathJSONRequestBody defines body for GetFilepath for application/json ContentType.
@@ -121,15 +122,15 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/6xTwW7bMAz9FYHbMY3dFbv41g3Y1stWoOu5oGU6ViGLqkgXCIr8+yA5adA5K9ZhOhEi",
-	"+fj4SD6B5TFyoKACzROIHWjEYt5hKxF1yHZMHCmpo+LZO4odJu+x9QSNpolWoNtI0IBocmEDu93zD7f3",
-	"ZBV2K7jrXY7/HTX/fsexeHpOIyo00LqAaQtL3IzDOC5h2sn57i+YrUDCPzWQv1zoOSd3JDa5qI4DNHCZ",
-	"1PVo1dxQenSWzOX1VabuNMPDTxI1nwcMmh3mzPyIFLJ1sa5hBY+UZMap1+frOjPkSAGjgwYu1nUJeta9",
-	"ynIdxrMhXbIRwmQHowMZxtHkeIOhMz2pHYxTMdiKKRClUsKceNVBA19JvxzgV5DoYSLRT9xtcxXLQSmU",
-	"ghijd7bkVffC4bhB2XqfqIcG3lXHFav2+1WV2e2KlokkcpB5eh/q+v/VOCxwKfNSnJvJWhLpJ++3ZkNa",
-	"ZCoSzQrP1KqBvOc/KmzLLDtqp80pCb+V5NMNvsLmBrdmTt2TmKJnLCsdWU7QmP0ze2Ujmhg3tGB0zaK3",
-	"M9RrMx0nry5i0iof4VmHim+QvJz2fqwPk0vUzXe1e7MMt8eu8il8rM+XCT06T93L0PJ+BQAA//9gE1fI",
-	"1wQAAA==",
+	"H4sIAAAAAAAC/6xUwW7bMAz9FYHbMY3dFbv41g3Y1stWIOu5oCU6ViFLqkgVCIr8+yA5adAlK9qhPhEi",
+	"+fj0HuVH0GGKwZMXhu4RWI80YQ1vseeIMpY4phApiaWa2SVq7LNz2DuCTlKmBcgmEnTAkqxfw3b7dBL6",
+	"O9IC2wXcDrbU/41aTn/iVDNDSBMKdNBbj2kDx7gFJ+B0DNNn68wrmC2A/avKcrbmv25ajqwfQmk2xDrZ",
+	"KDZ46OAyiR1Qi1pRerCa1OX1VbmjlQIPv4lFfR3RS0moM/Urki/RxbKFBTxQ4hmnXZ4v28IxRPIYLXRw",
+	"sWxr0ZNBTdF17+Oa5JgNEyY9KhlJBZxUqVfojRpI9KissMKeVYWokxKWxisDHXwn+baHX0Ci+0wsX4LZ",
+	"lCk6eCFfB2KMzura19xx8IdVK9HHRAN08KE57GKzW8SmmrytWibiGDzPNn9q2/ebsd/0Oua5OKusNTEP",
+	"2bmNWpNUmapEs8IztWYk58I/FdbVS0N9Xp+S8EdtPn3BF9iscKPm1h2JHF3Auqsx8Akac35mL0GxpIBr",
+	"OmJ0HVhuZqiXPJ2yExsxSVNe65lBwTdIXv8BO1vvs01k5ne1fbMMN4dblafwuT0/bhjQOjLPS+v3JwAA",
+	"//8BL22SAAUAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
